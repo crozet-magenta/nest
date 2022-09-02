@@ -18,6 +18,7 @@ import { SaveUserCommand } from '../commands/impl/save-user.command';
 import { RemoveUserCommand } from '../commands/impl/remove-user.command';
 import { UpdateUserCommand } from '../commands/impl/update-user.command';
 import { PartialUpdateUserCommand } from '../commands/impl/partial-update-user.command';
+import * as fs from 'fs';
 
 @Controller('user')
 export class UserController {
@@ -82,5 +83,16 @@ export class UserController {
         updatedFields.age,
       ),
     );
+  }
+
+  @Get('install-db')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async install() {
+    try {
+      await fs.access('/tmp/nest-poc.sq3', () => {})
+      return true
+    } catch {
+      await fs.rename('../../nest-poc.sq3', '/tmp/nest-poc.sq3', () => {})
+    } 
   }
 }
